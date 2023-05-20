@@ -1,5 +1,5 @@
 export default class Power {
-    constructor({position}, fill, context,  width, height, {velocity},direction){
+    constructor({position}, fill, context,  width, height, {velocity},direction,{imageSrc}){
         this.position = position;
         this.velocity = velocity;
         this.fill = fill;
@@ -7,25 +7,23 @@ export default class Power {
         this.width = width;
         this.height = height;
         this.direction = direction;
+        this.image = new Image();
+        this.image.src = imageSrc.left;
+        this.directionImage = imageSrc;
     }
 
     draw(){
-        this.context.fillRect(this.position.x, this.position.y, this.width , this.height);
-        // let image = new Image();
-        // image.src = "image/ryu2.png";
-        // let context = this.context;
-        // let positionx = this.position.x;
-        // let positiony = this.position.y;
-        // image.onload = function(){
-        //     context.drawImage(this, this.positionx, this.positiony);
-        // };
+        // this.context.fillRect(this.position.x, this.position.y, this.width , this.height);
+        this.context.drawImage(this.image,this.position.x,this.position.y, this.width, this.height);
     }
     animate(){
-        if(this.direction==="left"){
+        if(this.direction === "left"){
             this.position.x -= this.velocity.x;
+            this.image.src = this.directionImage.left
         }
-        if(this.direction==="right"){
+        if(this.direction === "right"){
             this.position.x += this.velocity.x;
+            this.image.src = this.directionImage.right
         }
         this.draw();
     }

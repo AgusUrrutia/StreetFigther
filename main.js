@@ -1,3 +1,4 @@
+import BackGround from "./js/background.js";
 import Enemy from "./js/enemy.js";
 import  Player  from "./js/player.js";
 
@@ -13,12 +14,19 @@ let player = new Player(
         x:50,
         y:50}
     },
-    "green",context,50,100,
+    "green",context,80,160,
     {velocity:{
             x:5,
             y:0
         }
-    },gravityH);
+    },gravityH,
+    {imagePowerSrc:{
+        right: "../image/hadouken.png",
+        left: "../image/hadouken2.png"
+    }},
+    "../image/ryuState.png",
+    "../image/ryuWalk.png"
+    );
 
 
 let punchSong = new Audio();
@@ -30,9 +38,9 @@ powerSong.src = "songs/hadouken.mp3";
 let backSong = new Audio();
 backSong.src = "songs/Street Fighter II Arcade Music - Guile Stage - CPS1.mp3";
 
-window.addEventListener('load', function() {
-    backSong.play();
-});
+// window.addEventListener('load', function() {
+//     backSong.play();
+// });
 
 
 //Creamos un enemigo
@@ -66,11 +74,13 @@ window.addEventListener('keydown', (e)=>{
     if(e.code === "ArrowLeft"){
         context.clearRect(0, 0, canvas.width, canvas.height);
         ArrowLeft = true;
+        player.image.src = player.imageW;
         player.left();
     }
     if(e.code === "ArrowRight"){
         context.clearRect(0, 0, canvas.width, canvas.height);
         ArrowRight = true;
+        player.image.src = player.imageW;
         player.right();
     }
     if(e.code === "KeyX"){
@@ -96,14 +106,32 @@ window.addEventListener('keyup',(e)=>{
         context.clearRect(0, 0, canvas.width, canvas.height);
         player.velocity.x = 5;
         ArrowLeft = false;
+        player.image.src = player.imageS;
     }
     if(e.code === "ArrowRight"){
         context.clearRect(0, 0, canvas.width, canvas.height);
         ArrowRight = false;
         player.velocity.x = 5;
+        player.image.src = player.imageS;
     }
 })
 
+
+
+
+let backGround1 = new BackGround(
+    {position:{
+        x:0,
+        y:0
+    }}, context, "../image/frente1.png"
+)
+
+let backGround2 = new BackGround(
+    {position:{
+        x:0,
+        y:0
+    }}, context, "../image/fondo.png"
+)
 
 
 
@@ -114,6 +142,8 @@ function animate(){
     window.requestAnimationFrame(animate);
     
     //llamamos a la funcion de animacion de todos los personajes
+    backGround2.animate();
+    backGround1.animate();
     enemy.animate();
     player.animate();
 

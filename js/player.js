@@ -1,7 +1,7 @@
 import Power from "./power.js";
 
 export default class Player {
-    constructor({position}, fill, context,  width, height, {velocity},gravityH){
+    constructor({position}, fill, context,  width, height, {velocity},gravityH,{imagePowerSrc},imageState,imageWalk,frames = 4, scale = 2){
         this.position = position;
         this.velocity = velocity;
         this.fill = fill;
@@ -14,13 +14,23 @@ export default class Player {
                 x: this.position.x,
                 y: this.position.y
             } ,
-            width:  80,
+            width:  100,
             height: 40
         };
         this.punch = false;
         this.lastDirection = "right";
         this.valuePrueba = 0;
         this.powers = [];
+        this.imagePowerSrc = imagePowerSrc;
+        this.image = new Image();
+        this.image.src = imageState;
+        this.imageW = imageWalk;
+        this.imageS = imageState;
+        this.frames = frames;
+        this.scale = scale;
+        this.tiempo = 0;
+        this.tiempox2 = 0;
+        this.tiempoEspera = 10;
     }
 
     moveTo(x, y){
@@ -31,9 +41,33 @@ export default class Player {
 
     draw(){
         this.context.fillStyle = this.fill;
-        this.context.fillRect(this.position.x, this.position.y, this.width, this.height);
+        this.context.drawImage(
+            this.image,
+            this.tiempo *(this.image.width / this.frames),
+            0,
+            this.image.width / this.frames,
+            this.image.height,
+            this.position.x,
+            this.position.y,
+            (this.image.width / this.frames) * this.scale,
+            this.image.height * this.scale
+            );
         if(this.punch){
             this.context.fillRect(this.punchArea.position.x, this.punchArea.position.y, this.punchArea.width , this.punchArea.height)
+        }
+    }
+
+    animate(){
+        this.punchArea.position.x = this.position.x - this.valuePrueba;
+        this.punchArea.position.y = this.position.y + 15;
+        this.gravity();
+        this.tiempox2++;
+        if(this.tiempox2 % this.tiempoEspera === 0){
+            if(this.tiempo < this.frames - 1){
+                this.tiempo++;
+            } else {
+                this.tiempo = 0;
+            }
         }
     }
 
@@ -63,7 +97,7 @@ export default class Player {
         this.position.y += this.velocity.y;
 
         
-        if(this.position.y + this.height + this.velocity.y >= this.context.canvas.clientHeight){
+        if(this.position.y + this.height + this.velocity.y >= this.context.canvas.clientHeight - 50){
             this.velocity.y = 0;
         }else{
             this.velocity.y += this.gravityH;
@@ -89,7 +123,7 @@ export default class Player {
             {position: 
                 {
                     x: this.position.x,
-                    y: this.position.y
+                    y: this.position.y + 15
                 }
             },
             this.fill,
@@ -100,15 +134,14 @@ export default class Player {
                 x: 8,
                 y: this.velocity.y}
             },
-            this.lastDirection
+            this.lastDirection,
+            {imageSrc :{
+                left : this.imagePowerSrc.left,
+                right : this.imagePowerSrc.right
+            }}
         );
         this.powers.push(power);
     }
 
-    animate(){
-        this.punchArea.position.x = this.position.x - this.valuePrueba;
-        this.punchArea.position.y = this.position.y;
-        this.gravity();
-        
-    }
+    
 }
